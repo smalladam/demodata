@@ -246,34 +246,45 @@ module.exports = {
 ```
 
 6.resolve解析
+
 resolve下常用的是extension和alias字段的配置：
 
 extension 不用在require或是import的时候加文件后缀
+```
 /* webpack.config.js */
 resolve: {
   extensions: ["", ".js", ".jsx"],
 },
 - var component = require('./component.js');
 + var component = require('./component');
+
+```
+
 alias 配置别名，加快webpack构建的速度
+
 每当引入jquery模块的时候，它会直接引入jqueryPath,而不需要从node_modules文件夹中按模块的查找规则查找,不需要webpack去解析jquery.js文件
 
 先安装jQuery
-
+```
 npm install jquery --save
 修改 webpack.config.js
+```
 
+```
 resolve: {
    extensions: ["",".js",".css",".json"],
 +  alias: {
 +    'jquery': jqueryPath
 +  }
 },
+```
+
 7.使用Babel-loader来解析es6和jsx
+
 我们在src/index.js里面尝试写一个最基本的组件代码，暂时不用理会代码为什么要这么写，这里先把ES6语法和JSX语法加进来，用于跑通我们的开发环境，后续会有专题内容来详细讲述。
 
 代码清单：src/index.js
-
+```
 'use strict';
 
 import React, { Component } from 'react';
@@ -287,21 +298,35 @@ class HelloWorld extends Component {
   }
 }
 
+```
+```
 ReactDOM.render(<HelloWorld />, document.getElementById('app'));
+
+```
+
 ok，我们看到，我们的代码用到了基本的react.js和react-dom.js，而且使用的是ES6的语法来封装的组件和应用模块。
 
 所以接下来我们要做两件事：
 
 下载相应的模块：
+```
 $ npm install --save react react-dom
+
+```
+
 下载并配置babel，以解析ES6语法和JSX语法。
 babel是一款强大的解析器，拥有活跃而且完善的生态，不仅可以做JS相关的各种语法的解析，还提供丰富的插件功能。
 
-
+```
 $ npm install babel-loader babel-core --save-dev
+
+```
+
 安装后我们需要配置webapck.config.js文件
 
 代码清单：webpack.config.js
+
+```
 
 var path = require('path');
 
@@ -320,25 +345,37 @@ module.exports = {
       ]
     }
 };
+
+```
+
 这里指定了使用babel-loader来解析js文件，但是并没有告诉babel应该如何来解析，所以我们需要创建一个babelrc配置文件
 
 $ touch .babelrc
 然后编辑babelrc 代码清单：.babelrc
-
+```
 {
   "presets": ["es2015", "react", "stage-0"],
   "plugins": []
 }
+
+```
+
 为什么配置的是这两个参数，解释一下，配置的preset字段是在为babel解析做预设，告诉babel需要使用相关的预设插件来解析代码，plugins字段，顾名思义，就是用来配置使用babel相关的插件的，这里暂且不装。
 
 这里使用到了三个预设需要下载安装
+```
+$ npm install --save-dev babel-preset-es2015
+ babel-preset-react babel-preset-stage-0
 
-$ npm install --save-dev babel-preset-es2015 babel-preset-react babel-preset-stage-0
+```
+
 // 其中stage-0预设是用来说明解析ES7其中一个阶段语法提案的转码规则
 好了，开始运行试一下吧
-
+```
 $ npm run dev
 在浏览器中访问：http://localhost:3000/
+
+```
 
 8.解析样式文件
 style-loader css-loader less-loader
@@ -347,6 +384,7 @@ style-loader css-loader less-loader
 
 我们在课程中暂且约定使用less预处理器（saas的类似）来写我们项目的样式，那么首先需要下载几个webpack的loader
 
+```
 $ npm install --save-dev style-loader css-loader less-loader
 进行webpack配置。 代码清单：webpack.config.js
 
@@ -365,16 +403,25 @@ loaders: [
       loader: 'style!css!less'
     }
 ]
+```
+
 9.图片加载
+
+```
 {
   test: /\.(jpe?g|png)$/,
   loader: 'file-loader'
 }
-10.图标字体等资源
-图标字体的加载可以选择file-loader 或 url-loader 进行加载，配置如下（示例配置，大家在项目中最好还是按实际情况配置）
 
+```
+10.图标字体等资源
+
+图标字体的加载可以选择file-loader 或 url-loader 进行加载，配置如下（示例配置，大家在项目中最好还是按实际情况配置）
+```
 {
   test: /\.(woff|woff2|ttf|svg|eot)(\?v=\d+\.\d+\.\d+)?$/,
   loader: "url?limit=10000"
 }
 Powered by idoc. Dependence Node.js run.
+
+```
